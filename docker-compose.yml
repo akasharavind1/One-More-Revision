@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: interview-tracker-postgres
+    environment:
+      POSTGRES_DB: interview_tracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  backend:
+    build: .
+    depends_on: [postgres]
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: interview_tracker
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: change-this-development-secret-key-to-at-least-32-bytes-long
+      CORS_ALLOWED_ORIGIN: http://localhost:4200
+    ports: ["8080:8080"]
+volumes: {pgdata: {}}
