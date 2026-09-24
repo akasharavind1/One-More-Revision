@@ -1,6 +1,5 @@
 package com.example.interviewtracker.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.time.Instant;
@@ -76,20 +75,6 @@ public final class ApiDtos {
 
     public record WorkspaceNoteResponse(Long id, QuestionResponse question, String answer, Instant createdAt,
                                         Instant updatedAt) {
-
-    }
-
-    public record WorkspaceNoteBulkItemRequest(@NotNull Long questionId, @NotNull String answer) {
-
-    }
-
-    public record WorkspaceNoteBulkRequest(
-            @NotNull @jakarta.validation.constraints.Size(min = 1, max = 100)
-            java.util.List<@Valid WorkspaceNoteBulkItemRequest> items) {
-
-    }
-
-    public record WorkspaceNoteBulkResponse(int created, int updated, int skipped) {
 
     }
 
