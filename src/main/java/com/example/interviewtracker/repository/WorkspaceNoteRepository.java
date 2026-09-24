@@ -14,7 +14,5 @@ public interface WorkspaceNoteRepository extends JpaRepository<WorkspaceNote, Lo
 
     boolean existsByUserIdAndQuestionId(Long userId, Long questionId);
 
-    Optional<WorkspaceNote> findByUserIdAndQuestionId(Long userId, Long questionId);
-
     long countByUserId(Long userId);
 }
