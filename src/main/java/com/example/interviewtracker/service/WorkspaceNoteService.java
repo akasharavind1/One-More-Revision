@@ -9,7 +9,9 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WorkspaceNoteService {
@@ -71,6 +73,39 @@ public class WorkspaceNoteService {
         }
         n.setAnswer(r.answer().trim());
         return mapper.note(notes.save(n));
+    }
+
+    @Transactional
+    public WorkspaceNoteBulkResponse bulkSave(String email, WorkspaceNoteBulkRequest r) {
+        var u = user(email);
+        Map<Long, String> byQuestion = new LinkedHashMap<>();
+        int skipped = 0;
+        for (var item : r.items()) {
+            if (item.answer() == null || item.answer().isBlank()) {
+                skipped++;
+                continue;
+            }
+            byQuestion.put(item.questionId(), item.answer().trim());
+        }
+        int created = 0;
+        int updated = 0;
+        for (var entry : byQuestion.entrySet()) {
+            var q = questions.get(entry.getKey());
+            var existing = notes.findByUserIdAndQuestionId(u.getId(), q.getId());
+            if (existing.isPresent()) {
+                existing.get().setAnswer(entry.getValue());
+                notes.save(existing.get());
+                updated++;
+            } else {
+                var n = new WorkspaceNote();
+                n.setUser(u);
+                n.setQuestion(q);
+                n.setAnswer(entry.getValue());
+                notes.save(n);
+                created++;
+            }
+        }
+        return new WorkspaceNoteBulkResponse(created, updated, skipped);
     }
 
     @Transactional
