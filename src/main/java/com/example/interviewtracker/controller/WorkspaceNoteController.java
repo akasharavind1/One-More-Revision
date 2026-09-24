@@ -38,6 +38,11 @@ public class WorkspaceNoteController {
         return s.create(a.getName(), r);
     }
 
+    @PostMapping("/bulk")
+    public WorkspaceNoteBulkResponse bulk(Authentication a, @Valid @RequestBody WorkspaceNoteBulkRequest r) {
+        return s.bulkSave(a.getName(), r);
+    }
+
     @PutMapping("/{id}")
     public WorkspaceNoteResponse update(Authentication a, @PathVariable Long id, @Valid @RequestBody WorkspaceNoteRequest r) {
         return s.update(a.getName(), id, r);
